@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import type { AppSettings } from "@/types";
+import { DEFAULT_API_BASE_URL } from "@/services/axios";
 
 const STORAGE_KEY = "rats.settings";
 
 const defaultSettings: AppSettings = {
   theme: "dark",
   environment: "development",
+  apiUrl: DEFAULT_API_BASE_URL,
   postmanEnvironment: "Local Dev",
   github: {
     repository: "devtejasx/rest-api-testing-suite",
