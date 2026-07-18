@@ -2,9 +2,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ExecutionState, RunStatus } from "@/types";
 import {
   createInitialExecutionState,
-  executionRequestsMock,
+  executionRequestTemplates,
   makeLog,
-} from "@/services/mock/execution.mock";
+} from "@/utils/executionSimulator";
 
 /** Requests that are scripted to fail, to make the demo run realistic. */
 const FAILING_REQUEST_IDS = new Set(["e_refresh"]);
@@ -51,7 +51,7 @@ export function useExecution(collectionId?: string, collectionName?: string) {
 
     timerRef.current = setInterval(() => {
       const i = indexRef.current;
-      const total = executionRequestsMock.length;
+      const total = executionRequestTemplates.length;
 
       if (i >= total) {
         clear();
@@ -78,7 +78,7 @@ export function useExecution(collectionId?: string, collectionName?: string) {
         return;
       }
 
-      const req = executionRequestsMock[i];
+      const req = executionRequestTemplates[i];
       const willFail = FAILING_REQUEST_IDS.has(req.id);
       const responseTime = Math.round(80 + Math.random() * 260);
       const status: RunStatus = willFail ? "failed" : "passed";
@@ -105,7 +105,7 @@ export function useExecution(collectionId?: string, collectionName?: string) {
         return {
           ...prev,
           progress: Math.round((nextIndex / total) * 100),
-          currentRequest: nextIndex < total ? executionRequestsMock[nextIndex].name : null,
+          currentRequest: nextIndex < total ? executionRequestTemplates[nextIndex].name : null,
           requests,
           logs,
           summary: {
