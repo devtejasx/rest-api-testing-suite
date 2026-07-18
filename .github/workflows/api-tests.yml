@@ -1,0 +1,69 @@
+name: API Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  api-tests:
+    name: Newman API tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      # 2. Install dependencies (provides newman + reporters)
+      - name: Install dependencies
+        run: npm ci
+
+      # 3. Start Docker Compose (PostgreSQL + backend).
+      #    The backend entrypoint waits for Postgres, runs `prisma migrate
+      #    deploy` (step 5) and seeds the database (step 6) before starting
+      #    the server (step 7) — so steps 4-7 are handled here.
+      - name: Start database and backend
+        run: docker compose up -d --build db backend
+
+      # 4. Wait for PostgreSQL + backend to be ready (health implies the
+      #    entrypoint finished migrations and seeding).
+      - name: Wait for backend to be healthy
+        run: |
+          echo "Waiting for backend at http://localhost:8080/api/health …"
+          for i in $(seq 1 60); do
+            if curl -fs http://localhost:8080/api/health > /dev/null; then
+              echo "Backend is up."
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "Backend did not become healthy in time — dumping logs:"
+          docker compose logs backend
+          exit 1
+
+      # 8. Run Newman (fails the job on any failed assertion — step 10).
+      - name: Run Newman API tests
+        run: npm run test:api
+
+      # 9. Upload reports (always, so failures are inspectable).
+      - name: Upload Newman reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-reports
+          path: reports/
+          if-no-files-found: warn
+
+      - name: Dump backend logs on failure
+        if: failure()
+        run: docker compose logs backend
+
+      - name: Tear down
+        if: always()
+        run: docker compose down -v
