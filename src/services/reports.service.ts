@@ -1,31 +1,22 @@
-import { mockDelay } from "./axios";
-import {
-  reportsMock,
-  reportDetailsMock,
-  buildFallbackReportDetail,
-} from "./mock/reports.mock";
+import { apiGet } from "./axios";
+import { mapReportSummary, mapReportDetail } from "./mappers";
+import type { ApiPaginated, ApiReport } from "./api.types";
 import type { ReportSummary, ReportDetail } from "@/types";
 
 /**
- * Reports service. Historical execution reports and their details.
- *
- * TODO(backend):
- *   list   -> apiClient.get<ReportSummary[]>("/reports")
- *   detail -> apiClient.get<ReportDetail>(`/reports/${id}`)
+ * Reports service. Historical execution reports and their details
+ * (GET /reports, GET /reports/:id).
  */
 export const reportsService = {
-  list(): Promise<ReportSummary[]> {
-    return mockDelay(reportsMock);
+  async list(): Promise<ReportSummary[]> {
+    const page = await apiGet<ApiPaginated<ApiReport>>("/reports", {
+      params: { pageSize: 100 },
+    });
+    return page.items.map(mapReportSummary);
   },
 
-  getById(id: string): Promise<ReportDetail> {
-    const detail = reportDetailsMock[id];
-    if (detail) return mockDelay(detail);
-
-    const summary = reportsMock.find((r) => r.id === id);
-    if (!summary) {
-      return Promise.reject(new Error(`Report "${id}" not found`));
-    }
-    return mockDelay(buildFallbackReportDetail(summary));
+  async getById(id: string): Promise<ReportDetail> {
+    const report = await apiGet<ApiReport>(`/reports/${id}`);
+    return mapReportDetail(report);
   },
 };
