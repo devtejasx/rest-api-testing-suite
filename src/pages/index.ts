@@ -1,0 +1,11 @@
+/** Barrel export for pages. */
+export { DashboardPage } from "./DashboardPage";
+export { CollectionsPage } from "./CollectionsPage";
+export { CollectionDetailPage } from "./CollectionDetailPage";
+export { TestExecutionPage } from "./TestExecutionPage";
+export { ReportsPage } from "./ReportsPage";
+export { ReportDetailPage } from "./ReportDetailPage";
+export { CICDPage } from "./CICDPage";
+export { DockerPage } from "./DockerPage";
+export { SettingsPage } from "./SettingsPage";
+export { NotFoundPage } from "./NotFoundPage";
