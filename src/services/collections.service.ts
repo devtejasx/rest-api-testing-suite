@@ -1,32 +1,22 @@
-import { mockDelay } from "./axios";
-import {
-  collectionsMock,
-  collectionDetailsMock,
-  buildFallbackDetail,
-} from "./mock/collections.mock";
+import { apiGet } from "./axios";
+import { mapCollection, mapCollectionDetail } from "./mappers";
+import type { ApiCollection, ApiPaginated } from "./api.types";
 import type { Collection, CollectionDetail } from "@/types";
 
 /**
- * Collections service. Lists Postman collections and returns folder/request
- * detail for a single collection.
- *
- * TODO(backend):
- *   list   -> apiClient.get<Collection[]>("/collections")
- *   detail -> apiClient.get<CollectionDetail>(`/collections/${id}`)
+ * Collections service. Lists collections and returns folder/request detail for
+ * a single collection (GET /collections, GET /collections/:id).
  */
 export const collectionsService = {
-  list(): Promise<Collection[]> {
-    return mockDelay(collectionsMock);
+  async list(): Promise<Collection[]> {
+    const page = await apiGet<ApiPaginated<ApiCollection>>("/collections", {
+      params: { pageSize: 100 },
+    });
+    return page.items.map(mapCollection);
   },
 
-  getById(id: string): Promise<CollectionDetail> {
-    const detail = collectionDetailsMock[id];
-    if (detail) return mockDelay(detail);
-
-    const summary = collectionsMock.find((c) => c.id === id);
-    if (!summary) {
-      return Promise.reject(new Error(`Collection "${id}" not found`));
-    }
-    return mockDelay(buildFallbackDetail(summary));
+  async getById(id: string): Promise<CollectionDetail> {
+    const collection = await apiGet<ApiCollection>(`/collections/${id}`);
+    return mapCollectionDetail(collection);
   },
 };
