@@ -1,5 +1,15 @@
 # REST API Testing Suite
 
+[![API Tests](https://github.com/devtejasx/real-time-chat-app/actions/workflows/api-tests.yml/badge.svg)](https://github.com/devtejasx/real-time-chat-app/actions/workflows/api-tests.yml)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-20-339933?logo=nodedotjs&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
+![Newman](https://img.shields.io/badge/Newman-69%20assertions%20passing-F6C915?logo=postman&logoColor=black)
+![License](https://img.shields.io/badge/License-MIT-green)
+
 A full-stack, production-quality SaaS dashboard for managing and monitoring
 automated REST API testing — with a live backend, PostgreSQL, a Postman/Newman
 test suite and CI. The UI is inspired by Vercel, GitHub, Postman and Railway.
