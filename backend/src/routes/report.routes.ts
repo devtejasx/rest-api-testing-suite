@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { reportController } from "../controllers/report.controller";
 import { validate } from "../middleware/validate";
-import { authenticate } from "../middleware/auth";
 import {
   idParamSchema,
   paginationQuerySchema,
@@ -9,8 +8,7 @@ import {
 
 const router = Router();
 
-router.use(authenticate);
-
+// Reports are read-only and public for dashboard consumption.
 router.get("/", validate({ query: paginationQuerySchema }), reportController.list);
 router.get("/:id", validate({ params: idParamSchema }), reportController.getById);
 
