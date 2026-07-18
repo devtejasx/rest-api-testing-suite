@@ -148,6 +148,21 @@ export interface ExecutionState {
   requests: ExecutionRequestResult[];
 }
 
+/** A persisted execution record returned by GET /executions. */
+export interface ExecutionRecord {
+  id: string;
+  collection: string;
+  status: RunStatus;
+  durationMs: number;
+  startedAt: string;
+  finishedAt: string | null;
+  passed: number;
+  failed: number;
+  total: number;
+  averageResponseTimeMs: number;
+  requests: ExecutionRequestResult[];
+}
+
 /* ------------------------------------------------------------------ */
 /* Reports                                                             */
 /* ------------------------------------------------------------------ */
@@ -245,6 +260,7 @@ export interface DockerContainer {
 export interface AppSettings {
   theme: "dark" | "light";
   environment: Environment;
+  apiUrl: string;
   postmanEnvironment: string;
   github: {
     repository: string;
