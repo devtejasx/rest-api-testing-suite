@@ -29,6 +29,19 @@ consumes the backend's REST API through a typed service + mapper layer, so the
 UI renders **live data from PostgreSQL** — with loading, error and empty states
 throughout.
 
+## Documentation
+
+| Doc | Contents |
+| --- | -------- |
+| [docs/SETUP.md](docs/SETUP.md) | Local setup for new developers |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System + data-model diagrams, request lifecycle |
+| [docs/FOLDER_STRUCTURE.md](docs/FOLDER_STRUCTURE.md) | Annotated folder layout + conventions |
+| [docs/TESTING.md](docs/TESTING.md) | Postman/Newman testing strategy |
+| [docs/DOCKER.md](docs/DOCKER.md) | Docker workflow and commands |
+| [docs/CICD.md](docs/CICD.md) | CI/CD pipeline explained |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution + architecture rules |
+| [INTEGRATION.md](INTEGRATION.md) | How the frontend and backend connect |
+
 ## Architecture
 
 ```mermaid
