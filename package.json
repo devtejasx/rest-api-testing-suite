@@ -10,9 +10,9 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test:api": "newman run postman/REST-API-Testing.postman_collection.json -e postman/REST-API-Testing.postman_environment.json -r cli,htmlextra,junit --reporter-htmlextra-export reports/newman-report.html --reporter-junit-export reports/newman-report.xml",
+    "test:api": "newman run postman/REST-API-Testing.postman_collection.json -e postman/REST-API-Testing.postman_environment.json -r cli,htmlextra,junit --reporter-htmlextra-export reports/newman-report.html --reporter-htmlextra-title \"REST API Testing Suite\" --reporter-htmlextra-browserTitle \"API Test Report\" --reporter-junit-export reports/newman-report.xml",
     "test:api:cli": "newman run postman/REST-API-Testing.postman_collection.json -e postman/REST-API-Testing.postman_environment.json -r cli",
-    "test:api:ci": "newman run postman/REST-API-Testing.postman_collection.json -e postman/REST-API-Testing.postman_environment.json --env-var baseUrl=$BASE_URL -r cli,htmlextra,junit --reporter-htmlextra-export reports/newman-report.html --reporter-junit-export reports/newman-report.xml"
+    "test:api:ci": "newman run postman/REST-API-Testing.postman_collection.json -e postman/REST-API-Testing.postman_environment.json --env-var baseUrl=$BASE_URL -r cli,htmlextra,junit --reporter-htmlextra-export reports/newman-report.html --reporter-htmlextra-title \"REST API Testing Suite\" --reporter-junit-export reports/newman-report.xml"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",
