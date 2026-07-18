@@ -1,7 +1,14 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FileCode2, FolderGit2, FlaskConical, Play } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  FileCode2,
+  FolderGit2,
+  FlaskConical,
+  Play,
+} from "lucide-react";
 import {
   CardGridSkeleton,
   EmptyState,
@@ -28,15 +35,50 @@ const STATUS_FILTERS = [
   { label: "Skipped", value: "skipped" },
 ];
 
+const SORT_OPTIONS = [
+  { label: "Name (A–Z)", value: "name-asc" },
+  { label: "Name (Z–A)", value: "name-desc" },
+  { label: "Most requests", value: "requests-desc" },
+  { label: "Most tests", value: "tests-desc" },
+  { label: "Highest pass rate", value: "pass-desc" },
+  { label: "Recently run", value: "recent-desc" },
+];
+
+const PAGE_SIZE = 6;
+
+function sortCollections(items: Collection[], sort: string): Collection[] {
+  const sorted = [...items];
+  switch (sort) {
+    case "name-asc":
+      return sorted.sort((a, b) => a.name.localeCompare(b.name));
+    case "name-desc":
+      return sorted.sort((a, b) => b.name.localeCompare(a.name));
+    case "requests-desc":
+      return sorted.sort((a, b) => b.requestCount - a.requestCount);
+    case "tests-desc":
+      return sorted.sort((a, b) => b.testCount - a.testCount);
+    case "pass-desc":
+      return sorted.sort((a, b) => b.passRate - a.passRate);
+    case "recent-desc":
+      return sorted.sort(
+        (a, b) => new Date(b.lastRun).getTime() - new Date(a.lastRun).getTime(),
+      );
+    default:
+      return sorted;
+  }
+}
+
 export function CollectionsPage() {
   const navigate = useNavigate();
   const { data, isLoading, isError, refetch } = useCollections();
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
+  const [sort, setSort] = useState("name-asc");
+  const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
     if (!data) return [];
-    return data.filter((c) => {
+    const matched = data.filter((c) => {
       const matchesSearch =
         c.name.toLowerCase().includes(search.toLowerCase()) ||
         c.description.toLowerCase().includes(search.toLowerCase()) ||
@@ -44,7 +86,18 @@ export function CollectionsPage() {
       const matchesStatus = status === "all" || c.status === status;
       return matchesSearch && matchesStatus;
     });
-  }, [data, search, status]);
+    return sortCollections(matched, sort);
+  }, [data, search, status, sort]);
+
+  // Reset to the first page whenever the result set changes.
+  useEffect(() => setPage(1), [search, status, sort]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const paged = filtered.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE,
+  );
 
   return (
     <div className="space-y-6">
@@ -71,6 +124,14 @@ export function CollectionsPage() {
           options={STATUS_FILTERS}
           placeholder="Status"
         />
+        <FilterDropdown
+          value={sort}
+          onChange={setSort}
+          options={SORT_OPTIONS}
+          placeholder="Sort"
+          icon={false}
+          className="sm:w-[190px]"
+        />
       </div>
 
       {isError ? (
@@ -88,17 +149,56 @@ export function CollectionsPage() {
           } }}
         />
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {filtered.map((collection, i) => (
-            <CollectionCard
-              key={collection.id}
-              collection={collection}
-              index={i}
-              onOpen={() => navigate(paths.collectionDetail(collection.id))}
-              onRun={() => navigate(paths.execution)}
-            />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {paged.map((collection, i) => (
+              <CollectionCard
+                key={collection.id}
+                collection={collection}
+                index={i}
+                onOpen={() => navigate(paths.collectionDetail(collection.id))}
+                onRun={() => navigate(paths.execution)}
+              />
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between pt-2">
+              <p className="text-sm text-muted-foreground">
+                Showing{" "}
+                <span className="font-medium text-foreground">
+                  {(currentPage - 1) * PAGE_SIZE + 1}–
+                  {Math.min(currentPage * PAGE_SIZE, filtered.length)}
+                </span>{" "}
+                of{" "}
+                <span className="font-medium text-foreground">{filtered.length}</span>
+              </p>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={currentPage <= 1}
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  Prev
+                </Button>
+                <span className="text-sm tabular-nums text-muted-foreground">
+                  {currentPage} / {totalPages}
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={currentPage >= totalPages}
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                >
+                  Next
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
