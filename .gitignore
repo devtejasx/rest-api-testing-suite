@@ -27,3 +27,8 @@ dist-ssr
 .env
 .env.local
 .env.*.local
+
+# Newman generated reports (keep the folder via reports/.gitkeep)
+reports/*.html
+reports/*.xml
+reports/*.json
