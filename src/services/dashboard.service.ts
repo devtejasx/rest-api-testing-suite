@@ -1,14 +1,12 @@
-import { mockDelay } from "./axios";
-import { dashboardMock } from "./mock/dashboard.mock";
+import { apiGet } from "./axios";
+import { mapDashboard } from "./mappers";
+import type { ApiDashboard } from "./api.types";
 import type { DashboardData } from "@/types";
 
-/**
- * Dashboard service. Returns aggregate metrics for the overview page.
- *
- * TODO(backend): replace with `apiClient.get<DashboardData>("/dashboard")`.
- */
+/** Dashboard overview — aggregate metrics + chart series from GET /dashboard. */
 export const dashboardService = {
-  getOverview(): Promise<DashboardData> {
-    return mockDelay(dashboardMock);
+  async getOverview(): Promise<DashboardData> {
+    const data = await apiGet<ApiDashboard>("/dashboard");
+    return mapDashboard(data);
   },
 };
