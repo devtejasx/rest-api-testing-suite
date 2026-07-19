@@ -22,6 +22,18 @@ Ready-to-use text for your GitHub repo, pinned card, portfolio and LinkedIn.
 > Real backend + PostgreSQL, a typed React 19 UI, a 69-assertion Postman/Newman
 > suite, one-command Docker Compose, and green GitHub Actions CI.
 
+## Pinned / portfolio card caption (one line)
+
+> 🧪 Full-stack REST API testing dashboard — React/TS · Express · Prisma ·
+> PostgreSQL · Postman/Newman (69 assertions) · Docker · GitHub Actions CI.
+
+Alternates:
+
+- **QA-focused:** "Internal QA tooling: run API collections, track executions &
+  reports, all tested by 69 Newman assertions in CI."
+- **Impact-focused:** "One `docker compose up` spins up a tested, CI-verified
+  full-stack API testing platform."
+
 ---
 
 ## Portfolio / LinkedIn — "How I built this"
