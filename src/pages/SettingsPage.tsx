@@ -1,5 +1,5 @@
 import { Github, Globe, Moon, Save, Server, Sun } from "lucide-react";
-import { PageHeader } from "@/components/common";
+import { PageHeader, useToast } from "@/components/common";
 import {
   Card,
   CardContent,
@@ -26,6 +26,7 @@ const POSTMAN_ENVIRONMENTS = ["Local Dev", "Staging", "Production", "QA Sandbox"
 
 export function SettingsPage() {
   const { settings, update, updateGithub } = useSettings();
+  const { toast } = useToast();
 
   return (
     <div className="space-y-6">
@@ -192,7 +193,15 @@ export function SettingsPage() {
             <Separator />
 
             <div className="flex justify-end">
-              <Button>
+              <Button
+                onClick={() =>
+                  toast({
+                    title: "Settings saved",
+                    description: "Your preferences are stored locally.",
+                    variant: "success",
+                  })
+                }
+              >
                 <Save className="h-4 w-4" />
                 Save changes
               </Button>
