@@ -4,6 +4,7 @@ import {
   Activity,
   Boxes,
   Container,
+  FileText,
   FolderGit2,
   GaugeCircle,
   GitBranch,
@@ -39,6 +40,7 @@ const NAV: { section: string; items: NavItem[] }[] = [
     items: [
       { label: "CI/CD", to: paths.cicd, icon: GitBranch },
       { label: "Docker", to: paths.docker, icon: Container },
+      { label: "Logs", to: paths.logs, icon: FileText },
     ],
   },
   {

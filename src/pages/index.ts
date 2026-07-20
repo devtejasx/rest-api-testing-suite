@@ -11,4 +11,5 @@ export { CICDPage } from "./CICDPage";
 export { DockerPage } from "./DockerPage";
 export { SettingsPage } from "./SettingsPage";
 export { LoginPage } from "./LoginPage";
+export { LogsPage } from "./LogsPage";
 export { NotFoundPage } from "./NotFoundPage";

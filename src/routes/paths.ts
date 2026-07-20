@@ -11,5 +11,6 @@ export const paths = {
   reportDetail: (id = ":id") => `/reports/${id}`,
   cicd: "/cicd",
   docker: "/docker",
+  logs: "/logs",
   settings: "/settings",
 } as const;
