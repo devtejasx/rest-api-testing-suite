@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { collectionService } from "../services/collection.service";
+import { executionService } from "../services/execution.service";
 import { sendSuccess } from "../utils/ApiResponse";
 import { asyncHandler } from "../utils/asyncHandler";
 
@@ -17,6 +18,17 @@ export const collectionController = {
   getById: asyncHandler(async (req: Request, res: Response) => {
     const collection = await collectionService.getById(req.params.id);
     sendSuccess(res, collection);
+  }),
+
+  history: asyncHandler(async (req: Request, res: Response) => {
+    const { page, pageSize } = req.query as unknown as { page: number; pageSize: number };
+    await collectionService.getById(req.params.id); // 404 if missing
+    const result = await executionService.list({
+      collectionId: req.params.id,
+      page,
+      pageSize,
+    });
+    sendSuccess(res, result);
   }),
 
   create: asyncHandler(async (req: Request, res: Response) => {

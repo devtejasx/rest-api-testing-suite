@@ -7,13 +7,18 @@ import {
   updateCollectionSchema,
   listCollectionsQuerySchema,
 } from "../validators/collection.validator";
-import { idParamSchema } from "../validators/common.validator";
+import { idParamSchema, paginationQuerySchema } from "../validators/common.validator";
 
 const router = Router();
 
 // Reads are public so the dashboard can consume them without a session.
 router.get("/", validate({ query: listCollectionsQuerySchema }), collectionController.list);
 router.get("/:id", validate({ params: idParamSchema }), collectionController.getById);
+router.get(
+  "/:id/history",
+  validate({ params: idParamSchema, query: paginationQuerySchema }),
+  collectionController.history,
+);
 
 // Writes require authentication.
 router.post(
