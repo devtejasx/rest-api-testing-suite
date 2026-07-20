@@ -36,8 +36,15 @@ services:
       BCRYPT_SALT_ROUNDS: ${BCRYPT_SALT_ROUNDS:-10}
       SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-admin@rats.dev}
       SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-Admin@12345}
+      POSTMAN_COLLECTION_PATH: ./postman/REST-API-Testing.postman_collection.json
+      POSTMAN_ENV_PATH: ./postman/REST-API-Testing.postman_environment.json
+      REPORTS_DIR: ./reports
+      NEWMAN_TARGET_URL: http://localhost:8080/api
     ports:
       - "8080:8080"
+    volumes:
+      - ../postman:/app/postman:ro
+      - ../reports:/app/reports
     healthcheck:
       test:
         - CMD
