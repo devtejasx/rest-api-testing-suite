@@ -1,9 +1,11 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios";
 import type { ApiEnvelope } from "./api.types";
 
-/** localStorage keys shared with the settings hook. */
+/** localStorage keys shared with the settings + auth hooks. */
 const SETTINGS_KEY = "rats.settings";
 const TOKEN_KEY = "rats.jwt";
+const REFRESH_KEY = "rats.refresh";
+const USER_KEY = "rats.user";
 
 /** The compile-time default, overridable at runtime via Settings. */
 export const DEFAULT_API_BASE_URL =
@@ -43,10 +45,58 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
+/** Single in-flight refresh shared by all queued 401s. */
+let refreshInFlight: Promise<string | null> | null = null;
+
+async function refreshAccessToken(): Promise<string | null> {
+  const refreshToken = localStorage.getItem(REFRESH_KEY);
+  if (!refreshToken) return null;
+  try {
+    // Use a bare axios call so we don't recurse through this interceptor.
+    const res = await axios.post<ApiEnvelope<{ token: string; refreshToken: string }>>(
+      `${resolveBaseUrl()}/auth/refresh`,
+      { refreshToken },
+      { headers: { "Content-Type": "application/json" } },
+    );
+    const { token, refreshToken: rotated } = res.data.data;
+    localStorage.setItem(TOKEN_KEY, token);
+    localStorage.setItem(REFRESH_KEY, rotated);
+    return token;
+  } catch {
+    // Refresh failed — clear the session.
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(REFRESH_KEY);
+    localStorage.removeItem(USER_KEY);
+    return null;
+  }
+}
+
 apiClient.interceptors.response.use(
   (response) => response,
-  (error) => {
-    // Surface a clean, consistent message to the query layer.
+  async (error) => {
+    const original = error?.config ?? {};
+    const status = error?.response?.status;
+    const isAuthCall =
+      typeof original.url === "string" && original.url.includes("/auth/");
+
+    // Feature 7 — automatic token refresh: on a 401, try once to refresh and
+    // replay the original request transparently.
+    if (
+      status === 401 &&
+      !original._retried &&
+      !isAuthCall &&
+      localStorage.getItem(REFRESH_KEY)
+    ) {
+      original._retried = true;
+      refreshInFlight = refreshInFlight ?? refreshAccessToken();
+      const newToken = await refreshInFlight;
+      refreshInFlight = null;
+      if (newToken) {
+        original.headers = { ...original.headers, Authorization: `Bearer ${newToken}` };
+        return apiClient(original);
+      }
+    }
+
     const message =
       error?.response?.data?.message ??
       error?.message ??
