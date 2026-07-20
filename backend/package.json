@@ -14,6 +14,8 @@
     "prisma:push": "prisma db push",
     "prisma:studio": "prisma studio",
     "seed": "prisma db seed",
+    "test": "jest --runInBand",
+    "test:coverage": "jest --runInBand --coverage",
     "docker:up": "docker-compose up --build"
   },
   "prisma": {
@@ -46,8 +48,13 @@
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.8",
     "@types/morgan": "^1.9.9",
+    "@types/jest": "^29.5.14",
     "@types/node": "^22.13.1",
+    "@types/supertest": "^6.0.2",
     "@types/swagger-ui-express": "^4.1.7",
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.5",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"
   }
