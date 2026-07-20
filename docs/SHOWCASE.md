@@ -69,7 +69,7 @@ uploads the reports — failing the build if any assertion fails.
 **Stack:** React · TypeScript · Vite · Tailwind · Express · Prisma · PostgreSQL ·
 JWT · Zod · Postman · Newman · Docker · GitHub Actions.
 
-🔗 Code: https://github.com/devtejasx/real-time-chat-app
+🔗 Code: https://github.com/devtejasx/rest-api-testing-suite
 
 ---
 
@@ -100,7 +100,7 @@ JWT · Zod · Postman · Newman · Docker · GitHub Actions.
 > reproducible: clone → `docker compose up` → migrations + seed run themselves →
 > the same tests that gate CI pass locally.
 >
-> Code + docs 👉 https://github.com/devtejasx/real-time-chat-app
+> Code + docs 👉 https://github.com/devtejasx/rest-api-testing-suite
 >
 > Feedback welcome! 🙌
 >
@@ -123,7 +123,7 @@ JWT · Zod · Postman · Newman · Docker · GitHub Actions.
 
 ```bash
 # set the repo description + topics via the GitHub CLI
-gh repo edit devtejasx/real-time-chat-app \
+gh repo edit devtejasx/rest-api-testing-suite \
   --description "Full-stack REST API testing dashboard — React/TS + Express/Prisma/PostgreSQL, Postman/Newman tests, Docker, GitHub Actions CI" \
   --add-topic react --add-topic typescript --add-topic nodejs --add-topic express \
   --add-topic prisma --add-topic postgresql --add-topic docker --add-topic postman \
