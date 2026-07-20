@@ -104,6 +104,19 @@ model Report {
   @@map("reports")
 }
 
+/// Persisted application logs (Feature 12): API requests, auth, executions, errors.
+model Log {
+  id        String   @id @default(uuid())
+  level     String   @default("info") // info | warn | error
+  type      String   @default("SYSTEM") // REQUEST | AUTH | EXECUTION | ERROR | SYSTEM
+  message   String
+  createdAt DateTime @default(now())
+
+  @@index([type])
+  @@index([createdAt])
+  @@map("logs")
+}
+
 enum Role {
   USER
   ADMIN
