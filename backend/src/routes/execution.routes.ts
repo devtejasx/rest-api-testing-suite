@@ -17,4 +17,7 @@ router.post("/run", authenticate, validate({ body: runExecutionSchema }), execut
 router.get("/", validate({ query: listExecutionsQuerySchema }), executionController.list);
 router.get("/:id", validate({ params: idParamSchema }), executionController.getById);
 
+// Deleting an execution mutates state — require authentication.
+router.delete("/:id", authenticate, validate({ params: idParamSchema }), executionController.remove);
+
 export default router;

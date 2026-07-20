@@ -25,4 +25,9 @@ export const executionController = {
     const execution = await executionService.getById(req.params.id);
     sendSuccess(res, execution);
   }),
+
+  remove: asyncHandler(async (req: Request, res: Response) => {
+    await executionService.remove(req.params.id);
+    sendSuccess(res, { id: req.params.id }, 200, "Execution deleted");
+  }),
 };
