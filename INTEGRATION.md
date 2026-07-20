@@ -3,7 +3,7 @@
 This repo is a monorepo:
 
 ```
-real-time-chat-app/
+rest-api-testing-suite/
 ├── src/            # frontend (React 19 + Vite)  — consumes the live API
 ├── backend/        # backend  (Express + Prisma)
 └── INTEGRATION.md  # you are here
