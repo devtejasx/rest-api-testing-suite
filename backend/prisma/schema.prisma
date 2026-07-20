@@ -12,14 +12,31 @@ datasource db {
 
 /// Application users. Passwords are stored as bcrypt hashes.
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
+  id            String         @id @default(uuid())
+  name          String
+  email         String         @unique
+  password      String
+  role          Role           @default(VIEWER)
+  createdAt     DateTime       @default(now())
+
+  refreshTokens RefreshToken[]
 
   @@map("users")
+}
+
+/// Hashed, rotatable refresh tokens (Feature 7).
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
 }
 
 /// A Postman-style collection of API requests + tests.
@@ -90,6 +107,8 @@ model Report {
 enum Role {
   USER
   ADMIN
+  TESTER
+  VIEWER
 }
 
 enum ExecutionStatus {
